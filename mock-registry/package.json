@@ -1,54 +1,55 @@
 {
-  "name": "@npmcli/smoke-tests",
-  "description": "The npm cli smoke tests",
+  "name": "@npmcli/mock-registry",
   "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
   "private": true,
   "scripts": {
+    "test": "tap",
     "lint": "eslint \"**/*.js\"",
     "postlint": "template-oss-check",
     "template-oss-apply": "template-oss-apply --force",
     "lintfix": "node .. run lint -- --fix",
     "snap": "tap",
-    "test": "tap",
     "posttest": "node .. run lint"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/npm/cli.git",
-    "directory": "smoke-tests"
+    "directory": "mock-registry"
   },
-  "devDependencies": {
-    "@npmcli/eslint-config": "^4.0.0",
-    "@npmcli/mock-registry": "^1.0.0",
-    "@npmcli/promise-spawn": "^6.0.1",
-    "@npmcli/template-oss": "4.9.0",
-    "http-proxy": "^1.18.1",
-    "just-extend": "^6.1.1",
-    "just-safe-set": "^4.1.1",
-    "tap": "^16.0.1",
-    "which": "^3.0.0"
-  },
+  "keywords": [],
   "author": "GitHub Inc.",
   "license": "ISC",
-  "templateOSS": {
-    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
-    "version": "4.9.0",
-    "content": "../scripts/template-oss/index.js"
+  "bugs": {
+    "url": "https://github.com/npm/cli/issues"
   },
-  "tap": {
-    "no-coverage": true,
-    "timeout": 600,
-    "test-ignore": "fixtures/*",
-    "nyc-arg": [
-      "--exclude",
-      "tap-snapshots/**"
-    ]
-  },
+  "homepage": "https://github.com/npm/cli#readme",
   "files": [
     "bin/",
     "lib/"
   ],
   "engines": {
     "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+  },
+  "templateOSS": {
+    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "4.9.0"
+  },
+  "tap": {
+    "no-coverage": true,
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
+  },
+  "devDependencies": {
+    "@npmcli/arborist": "^6.1.1",
+    "@npmcli/eslint-config": "^4.0.1",
+    "@npmcli/template-oss": "4.9.0",
+    "nock": "^13.2.9",
+    "npm-package-arg": "^10.0.0",
+    "pacote": "^15.0.6",
+    "tap": "^16.3.0"
   }
 }

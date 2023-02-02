@@ -13,6 +13,11 @@ on:
         required: true
         type: string
         default: git
+      installFlags:
+        description: 'extra flags to pass to npm install'
+        required: false
+        type: string
+        default: ''
 
   workflow_dispatch:
     inputs:
@@ -26,6 +31,11 @@ on:
         required: true
         type: string
         default: git
+      installFlags:
+        description: 'extra flags to pass to npm install'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build-nodejs:
@@ -264,11 +274,29 @@ jobs:
               'https-proxy-agent', // looks ssl related
               'node-gyp', // one test consistently times out
               'resolve', // compares results to require.resolve and fails, also missing inspector/promises
-              'serialport', // esbuild barfs on node 20.0.0-pre
-              'undici', // test failure in node >=19, unable to root cause
               'uuid', // tests that crypto.getRandomValues throws but it doesn't
               'weak', // doesn't seem to build in node >12
+              'mkdirp', // failing actions in own repo
             ]
+
+            if [[ "${{ startsWith(inputs.nodeVersion, '18.') }}" == "true" ]]; then
+              // build fails in node 18 only
+              knownFailures.push('multer')
+            fi
+
+            if [[ "${{ startsWith(inputs.nodeVersion, '19.') }}" == "true" ]]; then
+              // test failure in node >=19, unable to root cause
+              knownFailures.push('undici')
+            fi
+
+            if [[ "${{ inputs.nodeVersion }}" == "nightly" ]]; then
+              // test failure in node >=19, unable to root cause
+              knownFailures.push('undici')
+              // fails in node 20, looks like a streams issue
+              knownFailures.push('fastify')
+              // esbuild barfs on node 20.0.0-pre
+              knownFailures.push('serialport')
+            fi
 
             // this is a manually updated list of packages that are flaky
             const supplementalFlaky = [
@@ -289,6 +317,9 @@ jobs:
               if (meta.install) {
                 install_flags.push(meta.install.slice(1))
               }
+              if [[ "${{ inputs.installFlags }}" != "" ]]; then
+                install_flags.push("${{ inputs.installFlags }}")
+              fi
               const context = JSON.parse(execSync(`npm show ${package} --json`))
               const test = meta.scripts ? meta.scripts.map((script) => `npm run ${script}`) : ['npm test']
 
@@ -391,11 +422,8 @@ jobs:
           if [[ -f "package-lock.json" ]]; then
             newLockfileVersion=$(cat "package-lock.json" | jq .lockfileVersion)
             if [[ "$newLockfileVersion" -ne "${{ steps.download.outputs.lockfileVersion }}" ]]; then
-              logMessage="lockfileVersion changed from ${{ steps.download.outputs.lockfileVersion }} to $newLockfileVersion"
-              if [[ "${{ steps.download.outputs.lockfileVersion }}" -eq 1 ]]; then
-                echo "::warning ::$logMessage"
-              else
-                echo "::error ::$logMessage"
+              if [[ "${{ steps.download.outputs.lockfileVersion }}" -ne 1 ]]; then
+                echo "::error ::lockfileVersion changed from ${{ steps.download.outputs.lockfileVersion }} to $newLockfileVersion"
                 exit 1
               fi
             fi

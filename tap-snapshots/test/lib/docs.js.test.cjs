@@ -2552,7 +2552,7 @@ npm audit [fix|signatures]
 
 Options:
 [--audit-level <info|low|moderate|high|critical|none>] [--dry-run] [-f|--force]
-[--json] [--package-lock-only]
+[--json] [--package-lock-only] [--no-package-lock]
 [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
 [--foreground-scripts] [--ignore-scripts]
 [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
@@ -2569,6 +2569,7 @@ npm audit [fix|signatures]
 #### \`force\`
 #### \`json\`
 #### \`package-lock-only\`
+#### \`package-lock\`
 #### \`omit\`
 #### \`foreground-scripts\`
 #### \`ignore-scripts\`
@@ -3796,7 +3797,7 @@ npm query <selector>
 Options:
 [-g|--global]
 [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
-[-ws|--workspaces] [--include-workspace-root]
+[-ws|--workspaces] [--include-workspace-root] [--package-lock-only]
 
 Run "npm help query" for more info
 
@@ -3808,6 +3809,7 @@ npm query <selector>
 #### \`workspace\`
 #### \`workspaces\`
 #### \`include-workspace-root\`
+#### \`package-lock-only\`
 `
 
 exports[`test/lib/docs.js TAP usage rebuild > must match snapshot 1`] = `

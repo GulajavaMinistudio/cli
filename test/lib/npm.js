@@ -26,33 +26,18 @@ t.test('not yet loaded', async t => {
 t.test('npm.load', async t => {
   await t.test('load error', async t => {
     const { npm } = await loadMockNpm(t, { load: false })
-    const loadError = new Error('load error')
     npm.config.load = async () => {
-      throw loadError
+      throw new Error('load error')
     }
     await t.rejects(
       () => npm.load(),
       /load error/
     )
-
-    t.equal(npm.loadErr, loadError)
-    npm.config.load = async () => {
-      throw new Error('different error')
-    }
-    await t.rejects(
-      () => npm.load(),
-      /load error/,
-      'loading again returns the original error'
-    )
-    t.equal(npm.loadErr, loadError)
   })
 
   await t.test('basic loading', async t => {
-    const { npm, logs, prefix: dir, cache, other } = await loadMockNpm(t, {
+    const { npm, logs, cache } = await loadMockNpm(t, {
       prefixDir: { node_modules: {} },
-      otherDirs: {
-        newCache: {},
-      },
       config: {
         timing: true,
       },
@@ -73,25 +58,11 @@ t.test('npm.load', async t => {
 
     mockGlobals(t, { process: { platform: 'posix' } })
     t.equal(resolve(npm.cache), resolve(cache), 'cache is cache')
-    npm.cache = other.newCache
-    t.equal(npm.config.get('cache'), other.newCache, 'cache setter sets config')
-    t.equal(npm.cache, other.newCache, 'cache getter gets new config')
     t.equal(npm.lockfileVersion, 2, 'lockfileVersion getter')
     t.equal(npm.prefix, npm.localPrefix, 'prefix is local prefix')
     t.not(npm.prefix, npm.globalPrefix, 'prefix is not global prefix')
-    npm.globalPrefix = npm.prefix
-    t.equal(npm.prefix, npm.globalPrefix, 'globalPrefix setter')
-    npm.localPrefix = dir + '/extra/prefix'
-    t.equal(npm.prefix, npm.localPrefix, 'prefix is local prefix after localPrefix setter')
-    t.not(npm.prefix, npm.globalPrefix, 'prefix is not global prefix after localPrefix setter')
-
-    npm.prefix = dir + '/some/prefix'
-    t.equal(npm.prefix, npm.localPrefix, 'prefix is local prefix after prefix setter')
-    t.not(npm.prefix, npm.globalPrefix, 'prefix is not global prefix after prefix setter')
-    t.equal(npm.bin, npm.localBin, 'bin is local bin after prefix setter')
-    t.not(npm.bin, npm.globalBin, 'bin is not global bin after prefix setter')
-    t.equal(npm.dir, npm.localDir, 'dir is local dir after prefix setter')
-    t.not(npm.dir, npm.globalDir, 'dir is not global dir after prefix setter')
+    t.equal(npm.bin, npm.localBin, 'bin is local bin')
+    t.not(npm.bin, npm.globalBin, 'bin is not global bin')
 
     npm.config.set('global', true)
     t.equal(npm.prefix, npm.globalPrefix, 'prefix is global prefix after setting global')
@@ -100,12 +71,6 @@ t.test('npm.load', async t => {
     t.not(npm.bin, npm.localBin, 'bin is not local bin after setting global')
     t.equal(npm.dir, npm.globalDir, 'dir is global dir after setting global')
     t.not(npm.dir, npm.localDir, 'dir is not local dir after setting global')
-
-    npm.prefix = dir + '/new/global/prefix'
-    t.equal(npm.prefix, npm.globalPrefix, 'prefix is global prefix after prefix setter')
-    t.not(npm.prefix, npm.localPrefix, 'prefix is not local prefix after prefix setter')
-    t.equal(npm.bin, npm.globalBin, 'bin is global bin after prefix setter')
-    t.not(npm.bin, npm.localBin, 'bin is not local bin after prefix setter')
 
     mockGlobals(t, { process: { platform: 'win32' } })
     t.equal(npm.bin, npm.globalBin, 'bin is global bin in windows mode')
@@ -178,17 +143,16 @@ t.test('npm.load', async t => {
 
     outputs.length = 0
     logs.length = 0
-    await npm.exec('get', ['scope', '\u2010not-a-dash'])
+    await npm.exec('get', ['scope', 'usage'])
 
     t.strictSame([npm.command, npm.flatOptions.npmCommand], ['ll', 'll'],
       'does not change npm.command when another command is called')
 
     t.match(logs, [
-      'error arg Argument starts with non-ascii dash, this is probably invalid: \u2010not-a-dash',
       /timing command:config Completed in [0-9.]+ms/,
       /timing command:get Completed in [0-9.]+ms/,
     ])
-    t.same(outputs, ['scope=@foo\n\u2010not-a-dash=undefined'])
+    t.same(outputs, ['scope=@foo\nusage=false'])
   })
 
   await t.test('--no-workspaces with --workspace', async t => {
@@ -393,48 +357,14 @@ t.test('cache dir', async t => {
 })
 
 t.test('timings', async t => {
-  t.test('gets/sets timers', async t => {
-    const { npm, logs } = await loadMockNpm(t, {
-      config: {
-        timing: true,
-      },
-    })
-    time.start('foo')
-    time.start('bar')
-    t.match(npm.unfinishedTimers.get('foo'), Number, 'foo timer is a number')
-    t.match(npm.unfinishedTimers.get('bar'), Number, 'foo timer is a number')
-    time.end('foo')
-    time.end('bar')
-    time.end('baz')
-    // npm timer is started by default
-    time.end('npm')
-    t.match(logs.timing.byTitle('foo'), [
-      /Completed in [0-9]+ms/,
-    ])
-    t.match(logs.timing.byTitle('bar'), [
-      /Completed in [0-9]+ms/,
-    ])
-    t.match(logs.timing.byTitle('npm'), [
-      /Completed in [0-9]+ms/,
-    ])
-    t.match(logs.silly, [
-      `timing Tried to end timer that doesn't exist: baz`,
-    ])
-    t.notOk(npm.unfinishedTimers.has('foo'), 'foo timer is gone')
-    t.notOk(npm.unfinishedTimers.has('bar'), 'bar timer is gone')
-    t.match(npm.finishedTimers, { foo: Number, bar: Number, npm: Number })
-  })
-
   t.test('writes timings file', async t => {
-    const { npm, cache, timingFile } = await loadMockNpm(t, {
+    const { npm, timingFile } = await loadMockNpm(t, {
       config: { timing: true },
     })
     time.start('foo')
     time.end('foo')
     time.start('bar')
-    npm.writeTimingFile()
-    t.match(npm.timingFile, cache)
-    t.match(npm.timingFile, /-timing.json$/)
+    npm.finish()
     const timings = await timingFile()
     t.match(timings, {
       metadata: {
@@ -444,7 +374,6 @@ t.test('timings', async t => {
       },
       unfinishedTimers: {
         bar: [Number, Number],
-        npm: [Number, Number],
       },
       timers: {
         foo: Number,
@@ -457,7 +386,7 @@ t.test('timings', async t => {
     const { npm, timingFile } = await loadMockNpm(t, {
       config: { timing: false },
     })
-    npm.writeTimingFile()
+    npm.finish()
     await t.rejects(() => timingFile())
   })
 

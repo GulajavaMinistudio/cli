@@ -1,34 +1,33 @@
 const t = require('tap')
+const timers = require('node:timers/promises')
 const tmock = require('../../fixtures/tmock')
 const mockLogs = require('../../fixtures/mock-logs')
 const mockGlobals = require('@npmcli/mock-globals')
 const { inspect } = require('util')
 
 const mockDisplay = async (t, { mocks, load } = {}) => {
-  const { Chalk } = await import('chalk')
-  const { log, output } = require('proc-log')
+  const procLog = require('proc-log')
 
   const logs = mockLogs()
 
   const Display = tmock(t, '{LIB}/utils/display', mocks)
   const display = new Display(logs.streams)
-  const displayLoad = (opts) => display.load({
+  const displayLoad = async (opts) => display.load({
     loglevel: 'silly',
-    stderrChalk: new Chalk({ level: 0 }),
     stderrColor: false,
+    stdoutColot: false,
     heading: 'npm',
     ...opts,
   })
 
   if (load !== false) {
-    displayLoad(load)
+    await displayLoad(load)
   }
 
   t.teardown(() => display.off())
   return {
+    ...procLog,
     display,
-    output,
-    log,
     displayLoad,
     ...logs.logs,
   }
@@ -68,21 +67,36 @@ t.test('can buffer output when paused', async t => {
   output.standard('Message 2')
 
   t.strictSame(outputs, [])
-  displayLoad()
+  await displayLoad()
   t.strictSame(outputs, ['Message 1', 'Message 2'])
 })
 
 t.test('can do progress', async (t) => {
-  const { log, logs } = await mockDisplay(t, {
+  const { log, logs, outputs, outputErrors, output, input } = await mockDisplay(t, {
     load: {
       progress: true,
-      loglevel: 'error',
     },
   })
 
-  log.silly('', 'this would go to progress')
+  // wait for initial timer interval to load
+  await timers.setTimeout(200)
 
-  t.strictSame(logs, [], 'no logs were shown normally')
+  log.error('', 'before input')
+  output.standard('before input')
+
+  const end = input.start()
+  log.error('', 'during input')
+  output.standard('during input')
+  end()
+
+  // wait long enough for all spinner frames to render
+  await timers.setTimeout(800)
+  log.error('', 'after input')
+  output.standard('after input')
+
+  t.strictSame([...new Set(outputErrors)].sort(), ['-', '/', '\\', '|'])
+  t.strictSame(logs, ['error before input', 'error during input', 'error after input'])
+  t.strictSame(outputs, ['before input', 'during input', 'after input'])
 })
 
 t.test('handles log throwing', async (t) => {

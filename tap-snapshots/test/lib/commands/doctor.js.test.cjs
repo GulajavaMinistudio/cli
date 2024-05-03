@@ -731,11 +731,6 @@ Object {
   "warn": Array [
     String(
       doctor getGitPath Error: test error
-      doctor     at which {STACK}
-      doctor     at Doctor.getGitPath {STACK}
-      doctor     at Doctor.exec {STACK}
-      doctor     at processTicksAndRejections {STACK}
-      doctor     at MockNpm.exec {STACK}
     ),
   ],
 }

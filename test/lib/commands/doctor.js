@@ -11,7 +11,7 @@ const cleanCacheSha = (str) =>
   str.replace(/content-v2\/sha512\/[^"]+/g, 'content-v2/sha512/{sha}')
 
 t.cleanSnapshot = p => cleanCacheSha(cleanDate(cleanCwd(p)))
-  .replace(/\s\((\{CWD\}|node:).*\d+:\d+\)$/gm, ' {STACK}')
+  .replace(/^\s+(doctor\s+at\s).*$\n/gm, '')
 
 const npmManifest = (version) => {
   return {

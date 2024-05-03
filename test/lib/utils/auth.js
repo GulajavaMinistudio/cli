@@ -3,24 +3,21 @@ const setupMockNpm = require('../../fixtures/mock-npm')
 const tmock = require('../../fixtures/tmock')
 
 const setupOtplease = async (t, { otp = {}, ...rest }, fn) => {
-  const readUserInfo = {
-    otp: async () => '1234',
-  }
-
-  const webAuth = async (opener) => {
-    opener()
-    return '1234'
-  }
-
-  const otplease = tmock(t, '{LIB}/utils/otplease.js', {
-    '{LIB}/utils/read-user-info.js': readUserInfo,
-    '{LIB}/utils/open-url-prompt.js': () => {},
-    '{LIB}/utils/web-auth': webAuth,
+  const { otplease } = tmock(t, '{LIB}/utils/auth.js', {
+    '{LIB}/utils/read-user-info.js': {
+      otp: async () => '1234',
+    },
+    '{LIB}/utils/open-url.js': {
+      createOpener: () => () => {},
+    },
+    'npm-profile': {
+      webAuthOpener: async (opener) => {
+        opener()
+        return '1234'
+      },
+    },
   })
-
-  const { npm } = await setupMockNpm(t, rest)
-
-  return await otplease(npm, otp, fn)
+  return otplease(await setupMockNpm(t, rest).then(({ npm }) => npm), otp, fn)
 }
 
 t.test('returns function results on success', async (t) => {
@@ -119,7 +116,7 @@ t.test('prompts for otp for 401', async (t) => {
 })
 
 t.test('does not prompt for non-otp errors', async (t) => {
-  const fn = async (opts) => {
+  const fn = async () => {
     throw new Error('nope')
   }
 
@@ -132,7 +129,7 @@ t.test('does not prompt for non-otp errors', async (t) => {
 })
 
 t.test('does not prompt if stdin or stdout is not a tty', async (t) => {
-  const fn = async (opts) => {
+  const fn = async () => {
     throw Object.assign(new Error('nope'), { code: 'EOTP' })
   }
 

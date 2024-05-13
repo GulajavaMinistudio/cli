@@ -37,7 +37,7 @@ const loadMockNpm = (t, opts = {}) => _loadMockNpm(t, {
     // Reset configs that mock npm sets by default
     'fetch-retries': undefined,
     loglevel: undefined,
-    color: undefined,
+    color: false,
   },
 })
 
@@ -80,7 +80,13 @@ t.test('config list', async t => {
       },
     },
     homeDir: {
-      '.npmrc': 'userloaded=yes',
+      '.npmrc': [
+        'userloaded=yes',
+        'auth=bad',
+        '_auth=bad',
+        '//nerfdart:auth=bad',
+        '//nerfdart:_auth=bad',
+      ].join('\n'),
     },
   })
 
@@ -483,6 +489,12 @@ t.test('config get private key', async t => {
   await t.rejects(
     npm.exec('config', ['get', '_authToken']),
     /_authToken option is protected/,
+    'rejects with protected string'
+  )
+
+  await t.rejects(
+    npm.exec('config', ['get', 'authToken']),
+    /authToken option is protected/,
     'rejects with protected string'
   )
 

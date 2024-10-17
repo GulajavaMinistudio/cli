@@ -23,6 +23,7 @@
 !/CODE_OF_CONDUCT.md
 !/configure
 !/CONTRIBUTING.md
+!/DEPENDENCIES.json
 !/DEPENDENCIES.md
 !/docs/
 !/index.js
@@ -54,7 +55,6 @@ tap-testdir*/
 !/workspaces/libnpmdiff/
 !/workspaces/libnpmexec/
 !/workspaces/libnpmfund/
-!/workspaces/libnpmhook/
 !/workspaces/libnpmorg/
 !/workspaces/libnpmpack/
 !/workspaces/libnpmpublish/

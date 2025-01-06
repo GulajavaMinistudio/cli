@@ -53,8 +53,8 @@
     "workspaces/libnpmteam": {},
     "workspaces/libnpmversion": {}
   },
-  "prerelease": true,
+  "prerelease": false,
   "group-pull-request-title-pattern": "chore: release ${version}",
   "pull-request-title-pattern": "chore: release${component} ${version}",
-  "prerelease-type": "pre"
+  "prerelease-type": "pre.0"
 }

@@ -461,7 +461,7 @@ const definitions = {
   depth: new Definition('depth', {
     default: null,
     defaultDescription: `
-      \`Infinity\` if \`--all\` is set, otherwise \`1\`
+      \`Infinity\` if \`--all\` is set, otherwise \`0\`
     `,
     type: [null, Number],
     description: `
@@ -2231,7 +2231,6 @@ const definitions = {
   workspaces: new Definition('workspaces', {
     default: null,
     type: [null, Boolean],
-    short: 'ws',
     envExport: false,
     description: `
       Set to true to run the command in the context of **all** configured

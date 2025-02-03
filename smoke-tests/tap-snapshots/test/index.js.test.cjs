@@ -61,7 +61,7 @@ npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer
 npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
 npm error [--no-bin-links] [--no-fund] [--dry-run]
 npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
-npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+npm error [--workspaces] [--include-workspace-root] [--install-links]
 npm error
 npm error aliases: clean-install, ic, install-clean, isntall-clean
 npm error
@@ -110,6 +110,7 @@ Wrote to {NPM}/{TESTDIR}/project/package.json:
 {
   "name": "project",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo /"Error: no test specified/" && exit 1"
@@ -117,8 +118,7 @@ Wrote to {NPM}/{TESTDIR}/project/package.json:
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "description": ""
+  "type": "commonjs"
 }
 `
 
@@ -303,6 +303,7 @@ exports[`test/index.js TAP basic npm pkg > should print package.json contents 1`
 {
   "name": "project",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo /"Error: no test specified/" && exit 1",
@@ -312,7 +313,6 @@ exports[`test/index.js TAP basic npm pkg > should print package.json contents 1`
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "description": "",
   "dependencies": {
     "abbrev": "^1.0.4"
   },

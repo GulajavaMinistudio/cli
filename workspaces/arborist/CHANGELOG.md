@@ -1,5 +1,90 @@
 # Changelog
 
+## [9.1.6](https://github.com/npm/cli/compare/arborist-v9.1.5...arborist-v9.1.6) (2025-10-08)
+### Bug Fixes
+* [`0a8b8c2`](https://github.com/npm/cli/commit/0a8b8c2ba37872b08a24bcf067f6da34d718f6d8) [#8621](https://github.com/npm/cli/pull/8621) typo bugs and other spelling fixes (#8621) (@jsoref)
+* [`54fd27f`](https://github.com/npm/cli/commit/54fd27f9f6af54ca9fd11165aafbc8a13a38f39e) [#8602](https://github.com/npm/cli/pull/8602) refactor node.ideallyInert to node.inert (#8602) (@liamcmitchell)
+* [`13d8df6`](https://github.com/npm/cli/commit/13d8df64e78dc13c49ab0607b252de1d54f0122a) [#8537](https://github.com/npm/cli/pull/8537) optional set calculation (#8537) (@liamcmitchell)
+### Chores
+* [`180e9f7`](https://github.com/npm/cli/commit/180e9f709d10c959556c19205bb3636220bed9c7) [#8610](https://github.com/npm/cli/pull/8610) fix spelling in workspaces/arborist (#8610) (@jsoref)
+* [`91393de`](https://github.com/npm/cli/commit/91393deaf71bad084bb1d2aa868d5f895cc5f103) [#8599](https://github.com/npm/cli/pull/8599) Update references for arborist to cli (#8599) (@jsoref)
+
+## [9.1.5](https://github.com/npm/cli/compare/arborist-v9.1.4...arborist-v9.1.5) (2025-09-23)
+### Bug Fixes
+* [`60aa94b`](https://github.com/npm/cli/commit/60aa94b0379b2f4491c5d6857c1cff3036d9a3a9) [#8576](https://github.com/npm/cli/pull/8576) attach path to json parse error (@wraithgar)
+* [`1eedf82`](https://github.com/npm/cli/commit/1eedf82f2a36df193a51dca2c07fdc82dcb18a68) [#8576](https://github.com/npm/cli/pull/8576) use @npmcli/package-json to parse package.json (@wraithgar)
+* [`f6c868d`](https://github.com/npm/cli/commit/f6c868d8a2df4d2961983d4e52095d6e7551e9cb) [#8566](https://github.com/npm/cli/pull/8566) calculate omit in diff (#8566) (@liamcmitchell, Liam Mitchell)
+* [`d389614`](https://github.com/npm/cli/commit/d3896147c61b06d6d39a55bbb609f878548e0107) [#8579](https://github.com/npm/cli/pull/8579) corrects peer dependency flag propagation (@owlstronaut)
+### Dependencies
+* [`566f1b7`](https://github.com/npm/cli/commit/566f1b7b487ad80604c61162ddde769d5ac2b241) [#8576](https://github.com/npm/cli/pull/8576) `minimatch@10.0.3`
+* [`ea7ca5f`](https://github.com/npm/cli/commit/ea7ca5f49d6cab81e9ce3d412963c48acd87b7c0) [#8576](https://github.com/npm/cli/pull/8576) `lru-cache@11.2.1`
+* [`bf6b686`](https://github.com/npm/cli/commit/bf6b6862731e03002cc6fa3b86b6f090df46b009) [#8576](https://github.com/npm/cli/pull/8576) `npm-package-arg@13.0.0`
+* [`9392488`](https://github.com/npm/cli/commit/9392488d6036dfc9696e29cc8d463335517974ca) [#8576](https://github.com/npm/cli/pull/8576) `npm-package-manifest@11.0.1`
+* [`633c4ed`](https://github.com/npm/cli/commit/633c4ed76ea13b8dfb5837a397e984e44cccb820) [#8576](https://github.com/npm/cli/pull/8576) `hosted-git-info@9.0.0`
+* [`1149971`](https://github.com/npm/cli/commit/11499711e4c10e4ddb97bf3e1ef1652d151894fb) [#8576](https://github.com/npm/cli/pull/8576) `npm-registry-fetch@19.0.0`
+* [`6221e27`](https://github.com/npm/cli/commit/6221e277b4b841df09225b4d72f9eda70db1f15a) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/metavuln-calculator@9.0.2`
+* [`da81a37`](https://github.com/npm/cli/commit/da81a3702fdf7ea2dc7223fc6ece4c7a19e32ad1) [#8576](https://github.com/npm/cli/pull/8576) `cacache@20.0.1`
+* [`6b4c5f9`](https://github.com/npm/cli/commit/6b4c5f92865230ed9a260cd3e8486bf3991120eb) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/run-script@10.0.0`
+* [`b6bb9ae`](https://github.com/npm/cli/commit/b6bb9aea4134c47f0593c111a734eda12ec3c20d) [#8576](https://github.com/npm/cli/pull/8576) `pacote@21.0.3`
+* [`1b4433f`](https://github.com/npm/cli/commit/1b4433fdb85623e019a6194cb01ff85c7f64ccad) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/map-workspaces@5.0.0`
+* [`ceae674`](https://github.com/npm/cli/commit/ceae674c32a080b81e62d79003c2d537d7ca93d2) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/package-json@7.0.1`
+* [`4f37534`](https://github.com/npm/cli/commit/4f37534300553e9ddfbc413c14d1ef15b02b46f2) [#8576](https://github.com/npm/cli/pull/8576) remove read-package-json-fast
+### Chores
+* [`4059dfa`](https://github.com/npm/cli/commit/4059dfa47b0afc982703d8d83fce5574fdc6308f) [#8576](https://github.com/npm/cli/pull/8576) properly use arborist and cache in test (@owlstronaut)
+* [`402a0ab`](https://github.com/npm/cli/commit/402a0ab1b4e5d1a8414dd063d0cbde0c0bc5a192) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/template-oss@4.25.1` (@wraithgar)
+
+## [9.1.4](https://github.com/npm/cli/compare/arborist-v9.1.3...arborist-v9.1.4) (2025-09-03)
+### Bug Fixes
+* [`208c06e`](https://github.com/npm/cli/commit/208c06e91a187b03d6bdd75bff4e4285b365750c) [#8448](https://github.com/npm/cli/pull/8448) peer edge crash due to no parent or detached node (#8448) (@milaninfy)
+* [`3b54e9c`](https://github.com/npm/cli/commit/3b54e9c59c6dba342d2931cce6458a755e55960e) [#8534](https://github.com/npm/cli/pull/8534) installLinks works with transitive external file dependencies (#8534) (@owlstronaut)
+* [`ed71acb`](https://github.com/npm/cli/commit/ed71acb89fc3883e735987cc9be77efc2daff26a) [#8473](https://github.com/npm/cli/pull/8473) arborist: #8472 Keeps the registry protocol when modifying resolve URL (#8473) (@Jeepsboucher, Jean-Philippe Boucher)
+### Chores
+* [`619d43e`](https://github.com/npm/cli/commit/619d43e54ef7408d4ee6b38a776262b5132829b6) [#8540](https://github.com/npm/cli/pull/8540) fix pruner and reify tests for optional peer deps (#8540) (@liamcmitchell, Liam Mitchell)
+
+## [9.1.3](https://github.com/npm/cli/compare/arborist-v9.1.2...arborist-v9.1.3) (2025-07-24)
+### Bug Fixes
+* [`6dbe21a`](https://github.com/npm/cli/commit/6dbe21ab659c4e32657fec63fc58bb3f4992f4f1) [#8436](https://github.com/npm/cli/pull/8436) local transitive dependencies with --install-links=true (@owlstronaut)
+* [`8042af3`](https://github.com/npm/cli/commit/8042af3a56ad2b3160afc53874a5510be113330c) [#8431](https://github.com/npm/cli/pull/8431) prune optional peer dependencies that are no longer explicitly depended on (#8431) (@G-Rath)
+* [`c457c75`](https://github.com/npm/cli/commit/c457c7599afa430e3b0eb01bf9fee61464f6b8b7) [#8430](https://github.com/npm/cli/pull/8430) remove duplicate loop (#8430) (@G-Rath)
+* [`f7b056f`](https://github.com/npm/cli/commit/f7b056f28ac1a26fd875662768742df586c0b334) [#8400](https://github.com/npm/cli/pull/8400) clean up audit-report code (#8400) (@wraithgar)
+* [`f163d01`](https://github.com/npm/cli/commit/f163d011ade865b05b39b15aeee722809c223ae1) [#8372](https://github.com/npm/cli/pull/8372) use omit when checking ideal tree engine (#8372) (@owlstronaut)
+### Chores
+* [`3f60b5f`](https://github.com/npm/cli/commit/3f60b5f9621b43ae0b8796d3a7160a603748f756) [#8383](https://github.com/npm/cli/pull/8383) `@npmcli/template-oss@4.24.4` (#8383) (@wraithgar)
+* [`01f8cc6`](https://github.com/npm/cli/commit/01f8cc6f001e3211135fa0563f7129aed09dc46c) [#8381](https://github.com/npm/cli/pull/8381) `@npmcli/template-oss@4.24.3` (#8381) (@wraithgar)
+
+## [9.1.2](https://github.com/npm/cli/compare/arborist-v9.1.1...arborist-v9.1.2) (2025-06-11)
+### Bug Fixes
+* [`887385d`](https://github.com/npm/cli/commit/887385d7c0b6b584e0973a1f667c3b22eafc6e28) [#8356](https://github.com/npm/cli/pull/8356) arborist: use hosted-git-info to correctly parse resolved git urls (#8356) (@milaninfy)
+
+## [9.1.1](https://github.com/npm/cli/compare/arborist-v9.1.0...arborist-v9.1.1) (2025-05-21)
+### Bug Fixes
+* [`8f6eb6b`](https://github.com/npm/cli/commit/8f6eb6b29904b5a807c5c4c01c1246afc70a77f1) [#8312](https://github.com/npm/cli/pull/8312) arborist: fix file dep making wrong link (#8312) (@alexsch01)
+
+## [9.1.0](https://github.com/npm/cli/compare/arborist-v9.0.2...arborist-v9.1.0) (2025-05-15)
+### Features
+* [`57aa89f`](https://github.com/npm/cli/commit/57aa89ff70e0c6186a43888b944b5799b25c7bc8) [#8265](https://github.com/npm/cli/pull/8265) use run by default and run-script as the alias (#8265) (@owlstronaut)
+### Bug Fixes
+* [`d5bcf38`](https://github.com/npm/cli/commit/d5bcf38764dfd05c7677602ae1c22b3a7bfdb486) [#8268](https://github.com/npm/cli/pull/8268) arborist: Add better error message when lockfile is malformed (#8268) (@owlstronaut)
+* [`5e1fed9`](https://github.com/npm/cli/commit/5e1fed9f5e8d0ae05e67a3fe644d6e87d0559b7a) [#8290](https://github.com/npm/cli/pull/8290) arborist: improve README markdown (#8290) (@mbtools)
+* [`0886e7a`](https://github.com/npm/cli/commit/0886e7abced0d8bdfd564a3b254817ecbdc14857) [#8222](https://github.com/npm/cli/pull/8222) preserve registry path when replacing a host (@owlstronaut)
+* [`815311b`](https://github.com/npm/cli/commit/815311b9b8848585f8944f1f2684f10282525cf2) [#8206](https://github.com/npm/cli/pull/8206) arborist: workspaces correctly path to file: packages from overrides (@owlstronaut)
+
+## [9.0.2](https://github.com/npm/cli/compare/arborist-v9.0.1...arborist-v9.0.2) (2025-04-08)
+### Bug Fixes
+* [`a96d8f6`](https://github.com/npm/cli/commit/a96d8f6295886c219076178460718837d2fe45d6) [#8184](https://github.com/npm/cli/pull/8184) arborist: omit failed optional dependencies from installed deps (#8184) (@owlstronaut, @zkat)
+* [`04f53ce`](https://github.com/npm/cli/commit/04f53ce13201b460123067d7153f1681342548e1) [#8180](https://github.com/npm/cli/pull/8180) arborist: safely fallback on unresolved $ dependency references (#8180) (@owlstronaut)
+* [`885accd`](https://github.com/npm/cli/commit/885accdc750dd45fc9e4b5faf11bcc81292e17ad) [#8185](https://github.com/npm/cli/pull/8185) arborist: only replace hostname for resolved URL (#8185) (@billy-briggs-dev)
+* [`8b7bb12`](https://github.com/npm/cli/commit/8b7bb12617e80f3e5061c96d06dd723331fffa2d) [#8168](https://github.com/npm/cli/pull/8168) arborist: Allow downgrades to hoisted version dedupe workspace i… (#8168) (@owlstronaut)
+* [`1642556`](https://github.com/npm/cli/commit/1642556fe47d837ab7d0800d96bd2eebd0c908fd) [#8160](https://github.com/npm/cli/pull/8160) arborist: workspaces respect overrides on subsequent installs (#8160) (@owlstronaut)
+### Chores
+* [`88a7b52`](https://github.com/npm/cli/commit/88a7b52a69ba6a4f44216220d09000bf8468cae1) [#8174](https://github.com/npm/cli/pull/8174) add load-virtual and reify tests for workspace override test coverage (#8174) (@owlstronaut, @TrevorBurnham)
+
+## [9.0.1](https://github.com/npm/cli/compare/arborist-v9.0.0...arborist-v9.0.1) (2025-03-05)
+### Bug Fixes
+* [`b9225e5`](https://github.com/npm/cli/commit/b9225e524074239bd8db9a27f3e9ab72f2b5c09e) [#8089](https://github.com/npm/cli/pull/8089) resolve override conflicts and apply correct versions (#8089) (@owlstronaut)
+* [`d586f3b`](https://github.com/npm/cli/commit/d586f3b6da5cf864254e894efd3105ad52266599) [#8117](https://github.com/npm/cli/pull/8117) remove duplicate var (#8117) (@TrevorBurnham)
+* [`811ca29`](https://github.com/npm/cli/commit/811ca2927eed733c8fabf308bf9d467e7c959163) [#8115](https://github.com/npm/cli/pull/8115) stop working around bug fixed in `npm-package-arg@12.0.2` (@TrevorBurnham)
+
 ## [9.0.0](https://github.com/npm/cli/compare/arborist-v9.0.0-pre.1...arborist-v9.0.0) (2024-12-16)
 ### Features
 * [`a7bfc6d`](https://github.com/npm/cli/commit/a7bfc6df76882996ebb834dbca785fdf33b8c50d) [#7972](https://github.com/npm/cli/pull/7972) trigger release process (#7972) (@wraithgar)
@@ -96,7 +181,7 @@
 * [`e290352`](https://github.com/npm/cli/commit/e290352c6b9fd3bc7fa4b8ea2cc2000fb20fdec7) [#7499](https://github.com/npm/cli/pull/7499) revert DepsQueue to re-sort on pop() (#7499) (@lukekarrys)
 * [`56a27fa`](https://github.com/npm/cli/commit/56a27fa400f157fb9a56182900278c41efc6aba1) [#7494](https://github.com/npm/cli/pull/7494) avoid caching manifests as promises (@wraithgar)
 * [`722c0fa`](https://github.com/npm/cli/commit/722c0faa387ae6e35886f08eefb238c03ae85db1) [#7463](https://github.com/npm/cli/pull/7463) limit packument cache size based on heap size (@wraithgar)
-* [`effe910`](https://github.com/npm/cli/commit/effe9109d6bc7828bf916c4dee49b2a53c72f39d) [#7475](https://github.com/npm/cli/pull/7475) dont omit license from stored manifests (#7475) (@lukekarrys)
+* [`effe910`](https://github.com/npm/cli/commit/effe9109d6bc7828bf916c4dee49b2a53c72f39d) [#7475](https://github.com/npm/cli/pull/7475) don't omit license from stored manifests (#7475) (@lukekarrys)
 
 ### Dependencies
 
@@ -137,7 +222,7 @@
 
 ### Features
 
-* [`9123de4`](https://github.com/npm/cli/commit/9123de4d282bfd19ea17ad613f5a2acab0e0e162) [#7373](https://github.com/npm/cli/pull/7373) do all ouput over proc-log events (@lukekarrys)
+* [`9123de4`](https://github.com/npm/cli/commit/9123de4d282bfd19ea17ad613f5a2acab0e0e162) [#7373](https://github.com/npm/cli/pull/7373) do all output over proc-log events (@lukekarrys)
 * [`9622597`](https://github.com/npm/cli/commit/9622597399ec93224fddf90a9209a98dbcfd6b2f) [#7339](https://github.com/npm/cli/pull/7339) refactor terminal display (#7339) (@lukekarrys)
 
 ### Bug Fixes
@@ -725,7 +810,7 @@
 
 ### Bug Fixes
 
-* **arborist:** dont skip adding advisories to audit based on name/range ([aa4a4da](https://github.com/npm/cli/commit/aa4a4da336a6ec1963394fdbd06acb173c842d26)), closes [#4681](https://github.com/npm/cli/issues/4681)
+* **arborist:** don't skip adding advisories to audit based on name/range ([aa4a4da](https://github.com/npm/cli/commit/aa4a4da336a6ec1963394fdbd06acb173c842d26)), closes [#4681](https://github.com/npm/cli/issues/4681)
 * **arborist:** when reloading an edge, also refresh overrides ([4d676e3](https://github.com/npm/cli/commit/4d676e31a68f081b8553eff4e79db1f29acf47e1))
 
 ### [5.0.5](https://github.com/npm/cli/compare/arborist-v5.0.4...arborist-v5.0.5) (2022-04-06)

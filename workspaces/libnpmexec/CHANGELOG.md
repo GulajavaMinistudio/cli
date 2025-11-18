@@ -1,5 +1,74 @@
 # Changelog
 
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.1): `@npmcli/arborist@9.1.1`
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.2): `@npmcli/arborist@9.1.2`
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.3): `@npmcli/arborist@9.1.3`
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.4): `@npmcli/arborist@9.1.4`
+
+## [10.1.8](https://github.com/npm/cli/compare/libnpmexec-v10.1.7...libnpmexec-v10.1.8) (2025-10-08)
+### Bug Fixes
+* [`d62c5fe`](https://github.com/npm/cli/commit/d62c5fe9a7c6b180019cd4d62e7963f232038ebb) [#8625](https://github.com/npm/cli/pull/8625) spelling in workspaces/libnpmexec (#8625) (@jsoref)
+### Chores
+* [`91393de`](https://github.com/npm/cli/commit/91393deaf71bad084bb1d2aa868d5f895cc5f103) [#8599](https://github.com/npm/cli/pull/8599) Update references for arborist to cli (#8599) (@jsoref)
+
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.6): `@npmcli/arborist@9.1.6`
+
+## [10.1.7](https://github.com/npm/cli/compare/libnpmexec-v10.1.6...libnpmexec-v10.1.7) (2025-09-23)
+### Bug Fixes
+* [`1eedf82`](https://github.com/npm/cli/commit/1eedf82f2a36df193a51dca2c07fdc82dcb18a68) [#8576](https://github.com/npm/cli/pull/8576) use @npmcli/package-json to parse package.json (@wraithgar)
+* [`7949cff`](https://github.com/npm/cli/commit/7949cff04d28e2344461a18ef30bf36fc76a091d) [#8577](https://github.com/npm/cli/pull/8577) libnpmexec: improve withLock stability (#8577) (@jenseng)
+* [`5db81c3`](https://github.com/npm/cli/commit/5db81c350654dbbe2e1442d623efada9a24e04f1) [#8512](https://github.com/npm/cli/pull/8512) allow concurrent non-local npx calls (#8512) (@jenseng, @wraithgar)
+### Dependencies
+* [`bf6b686`](https://github.com/npm/cli/commit/bf6b6862731e03002cc6fa3b86b6f090df46b009) [#8576](https://github.com/npm/cli/pull/8576) `npm-package-arg@13.0.0`
+* [`6b4c5f9`](https://github.com/npm/cli/commit/6b4c5f92865230ed9a260cd3e8486bf3991120eb) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/run-script@10.0.0`
+* [`b6bb9ae`](https://github.com/npm/cli/commit/b6bb9aea4134c47f0593c111a734eda12ec3c20d) [#8576](https://github.com/npm/cli/pull/8576) `pacote@21.0.3`
+* [`ceae674`](https://github.com/npm/cli/commit/ceae674c32a080b81e62d79003c2d537d7ca93d2) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/package-json@7.0.1`
+* [`4f37534`](https://github.com/npm/cli/commit/4f37534300553e9ddfbc413c14d1ef15b02b46f2) [#8576](https://github.com/npm/cli/pull/8576) remove read-package-json-fast
+### Chores
+* [`402a0ab`](https://github.com/npm/cli/commit/402a0ab1b4e5d1a8414dd063d0cbde0c0bc5a192) [#8576](https://github.com/npm/cli/pull/8576) `@npmcli/template-oss@4.25.1` (@wraithgar)
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.5): `@npmcli/arborist@9.1.5`
+
+## [10.1.2](https://github.com/npm/cli/compare/libnpmexec-v10.1.1...libnpmexec-v10.1.2) (2025-05-15)
+### Bug Fixes
+* [`fdc3413`](https://github.com/npm/cli/commit/fdc3413019c2f34f1fde35449e5f3a6b0fb51ba2) [#8221](https://github.com/npm/cli/pull/8221) exec: Fails to Execute Binaries Named After Shell Keywords (#8221) (@13sfaith)
+
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.1.0): `@npmcli/arborist@9.1.0`
+
+## [10.1.1](https://github.com/npm/cli/compare/libnpmexec-v10.1.0...libnpmexec-v10.1.1) (2025-04-08)
+### Bug Fixes
+* [`386f328`](https://github.com/npm/cli/commit/386f32898067d8ae17a160271bf1bc1832e6ebb4) [#8154](https://github.com/npm/cli/pull/8154) npx: always save true when installing to npx cache (#8154) (@milaninfy)
+
+
+### Dependencies
+
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.0.2): `@npmcli/arborist@9.0.2`
+
+## [10.1.0](https://github.com/npm/cli/compare/libnpmexec-v10.0.0...libnpmexec-v10.1.0) (2025-03-05)
+### Features
+* [`d18d422`](https://github.com/npm/cli/commit/d18d422e081fbf33a0671cbd83a64531c485f940) [#8100](https://github.com/npm/cli/pull/8100) add context to npx cache package.json (@wraithgar)
+### Bug Fixes
+* [`8461186`](https://github.com/npm/cli/commit/846118686849f821b084775f7891038013f7ba97) [#8100](https://github.com/npm/cli/pull/8100) update npx cache if possible when spec is a range (@wraithgar)
+### Dependencies
+* [`3d8b257`](https://github.com/npm/cli/commit/3d8b257bd667e76e74236c756aaa2dceaa6d6e5e) [#8100](https://github.com/npm/cli/pull/8100) `@npmcli/package-json@6.1.1`
+* [workspace](https://github.com/npm/cli/releases/tag/arborist-v9.0.1): `@npmcli/arborist@9.0.1`
+
 ## [10.0.0](https://github.com/npm/cli/compare/libnpmexec-v10.0.0-pre.1...libnpmexec-v10.0.0) (2024-12-16)
 ### Features
 * [`a7bfc6d`](https://github.com/npm/cli/commit/a7bfc6df76882996ebb834dbca785fdf33b8c50d) [#7972](https://github.com/npm/cli/pull/7972) trigger release process (#7972) (@wraithgar)

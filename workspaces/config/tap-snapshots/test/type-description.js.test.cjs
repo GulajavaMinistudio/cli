@@ -231,6 +231,12 @@ Object {
   "init-module": Array [
     "valid filesystem path",
   ],
+  "init-private": Array [
+    "boolean value (true or false)",
+  ],
+  "init-type": Array [
+    Function String(),
+  ],
   "init-version": Array [
     "full valid SemVer string",
   ],
@@ -321,6 +327,9 @@ Object {
   ],
   "message": Array [
     Function String(),
+  ],
+  "node-gyp": Array [
+    "valid filesystem path",
   ],
   "node-options": Array [
     null,

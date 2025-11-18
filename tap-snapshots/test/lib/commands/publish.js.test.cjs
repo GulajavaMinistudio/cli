@@ -197,7 +197,7 @@ Object {
     "man/man1/npm-repo.1",
     "man/man1/npm-restart.1",
     "man/man1/npm-root.1",
-    "man/man1/npm-run-script.1",
+    "man/man1/npm-run.1",
     "man/man1/npm-sbom.1",
     "man/man1/npm-search.1",
     "man/man1/npm-shrinkwrap.1",
@@ -290,6 +290,15 @@ exports[`test/lib/commands/publish.js TAP re-loads publishConfig.registry if add
 
 exports[`test/lib/commands/publish.js TAP respects publishConfig.registry, runs appropriate scripts > new package version 1`] = `
 
+> @npmcli/test-package@1.0.0 prepublishOnly
+> touch scripts-prepublishonly
+
+> @npmcli/test-package@1.0.0 publish
+> touch scripts-publish
+
+> @npmcli/test-package@1.0.0 postpublish
+> touch scripts-postpublish
++ @npmcli/test-package@1.0.0
 `
 
 exports[`test/lib/commands/publish.js TAP restricted access > must match snapshot 1`] = `
@@ -393,7 +402,7 @@ exports[`test/lib/commands/publish.js TAP workspaces all workspaces - some marke
 + workspace-a@1.2.3-a
 `
 
-exports[`test/lib/commands/publish.js TAP workspaces differet package spec > publish different package spec 1`] = `
+exports[`test/lib/commands/publish.js TAP workspaces different package spec > publish different package spec 1`] = `
 + pkg@1.2.3
 `
 

@@ -8,6 +8,7 @@ const fs = require('node:fs')
 const fsp = require('node:fs/promises')
 const npmFs = require('@npmcli/fs')
 const MockRegistry = require('@npmcli/mock-registry')
+const { dirname, relative } = require('node:path')
 
 let failRm = false
 let failRename = null
@@ -198,7 +199,7 @@ t.test('packageLockOnly can add deps', async t => {
   t.throws(() => fs.statSync(path + '/node_modules'), { code: 'ENOENT' })
 })
 
-t.test('malformed package.json should not be overwitten', async t => {
+t.test('malformed package.json should not be overwritten', async t => {
   t.plan(2)
 
   const path = fixture(t, 'malformed-json')
@@ -393,6 +394,21 @@ t.test('dev, optional, devOptional flags and omissions', t => {
   }))
 })
 
+t.test('omit reports no diff on second run', async t => {
+  const path = fixture(t, 'testing-dev-optional-flags')
+  createRegistry(t, true)
+  const arb = newArb({ path })
+  await arb.reify({ omit: ['dev'] })
+  t.equal(arb.actualTree.children.get('once'), undefined, 'no once in tree')
+  t.ok(arb.diff.children.length, 'first reify has changes')
+  await arb.reify({ omit: ['dev'] })
+  t.equal(arb.actualTree.children.get('once'), undefined, 'no once in tree')
+  t.notOk(arb.diff.children.length, 'second reify has no changes')
+  await arb.reify({})
+  t.ok(arb.actualTree.children.get('once'), 'once in tree')
+  t.ok(arb.diff.children.length, 'removing omit has changes')
+})
+
 t.test('omits when both dev and optional flags are set', t => {
   const path = 'testing-dev-optional-flags-2'
   const omits = [['dev'], ['optional']]
@@ -477,41 +493,57 @@ t.test('tracks changes of shrinkwrapped dep correctly', async t => {
 
 t.test('do not install optional deps with mismatched platform specifications', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(fixture(t, 'optional-platform-specification')))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path)
+  t.equal(tree.children.size, 0, 'does not have deps')
+})
+
+t.test('do not report failed optional deps as installed', async t => {
+  createRegistry(t, true)
+  const path = fixture(t, 'optional-platform-specification')
+  const arb = newArb({ path })
+  await arb.reify()
+  t.equal(arb.diff.children.length, 0, 'no changes, nothing installed')
 })
 
 t.test('still do not install optional deps with mismatched platform specifications even when forced', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(fixture(t, 'optional-platform-specification'), { force: true }))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path, { force: true })
+  t.equal(tree.children.size, 0, 'does not have deps')
 })
 
 t.test('fail to install deps with mismatched platform specifications', async t => {
   createRegistry(t, true)
-  await t.rejects(printReified(fixture(t, 'platform-specification')), { code: 'EBADPLATFORM' })
+  await t.rejects(reify(fixture(t, 'platform-specification')), { code: 'EBADPLATFORM' })
 })
 
 t.test('success to install optional deps with matched platform specifications with os and cpu and libc options', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(
-    fixture(t, 'optional-platform-specification'), { os: 'not-your-os', cpu: 'not-your-cpu', libc: 'not-your-libc' }))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path, { os: 'not-your-os', cpu: 'not-your-cpu', libc: 'not-your-libc' })
+  t.equal(tree.children.size, 1, 'does have deps')
 })
 
 t.test('fail to install optional deps with matched os and mismatched cpu with os and cpu and libc options', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(
-    fixture(t, 'optional-platform-specification'), { os: 'not-your-os', cpu: 'another-cpu', libc: 'not-your-libc' }))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path, { os: 'not-your-os', cpu: 'another-cpu', libc: 'not-your-libc' })
+  t.equal(tree.children.size, 0, 'does not have deps')
 })
 
 t.test('fail to install optional deps with mismatched os and matched cpu with os and cpu and libc options', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(
-    fixture(t, 'optional-platform-specification'), { os: 'another-os', cpu: 'not-your-cpu', libc: 'not-your-libc' }))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path, { os: 'another-os', cpu: 'not-your-cpu', libc: 'not-your-libc' })
+  t.equal(tree.children.size, 0, 'does not have deps')
 })
 
 t.test('fail to install optional deps with matched os and matched cpu and mismatched libc with os and cpu and libc options', async t => {
   createRegistry(t, true)
-  await t.resolveMatchSnapshot(printReified(
-    fixture(t, 'optional-platform-specification'), { os: 'another-os', cpu: 'not-your-cpu', libc: 'not-your-libc' }))
+  const path = fixture(t, 'optional-platform-specification')
+  const tree = await reify(path, { os: 'another-os', cpu: 'not-your-cpu', libc: 'not-your-libc' })
+  t.equal(tree.children.size, 0, 'does not have deps')
 })
 
 t.test('dry run, do not get anything wet', async t => {
@@ -1168,7 +1200,7 @@ t.test('scoped registries', async t => {
   const path = t.testdir()
 
   // TODO
-  // this is a very artifical test that is setting a lot of internal things
+  // this is a very artificial test that is setting a lot of internal things
   // up so that we assert that the intended behavior of sending right
   // resolved data for pacote.extract is working as intended, alternatively
   // we might prefer to replace this with a proper parallel alternative
@@ -1319,7 +1351,7 @@ t.test('workspaces', async t => {
     await t.test('workspaces only', async t => {
       createRegistry(t, false)
       const { root, a, b } = await runCase(t, { workspaces: ['a'] })
-      t.equal(root.exists(), false, 'root')
+      t.equal(root.exists(), true, 'root')
       t.equal(a.exists(), false, 'a')
       t.equal(b.exists(), true, 'b')
     })
@@ -1346,6 +1378,13 @@ t.test('workspaces', async t => {
     createRegistry(t, false)
     await reify(path)
     t.matchSnapshot(require(path + '/package-lock.json'), 'should lock workspaces config')
+  })
+
+  await t.test('reify workspaces with overrides', async t => {
+    const path = fixture(t, 'workspaces-with-overrides')
+    createRegistry(t, true)
+    await reify(path, { workspacesEnabled: true, workspaces: ['ws'] })
+    t.matchSnapshot(require(path + '/package-lock.json'), 'should retain override version (4.1.3)')
   })
 
   await t.test('reify workspaces bin files', t => {
@@ -2427,26 +2466,18 @@ t.test('move aside symlink clutter', async t => {
       file: 'do not delete me please',
       'package.json': JSON.stringify({ name: 'ABBREV', version: '1.0.0' }),
     },
-    'sensitivity-test': t.fixture('symlink', './target'),
+    node_modules: {
+      ABBREV: t.fixture('symlink', '../target'),
+    },
   })
 
   // check to see if we're on a case-insensitive fs
   try {
-    const st = fs.lstatSync(path + '/SENSITIVITY-TEST')
-    t.equal(st.isSymbolicLink(), true, 'fs is case insensitive')
+    const st = fs.lstatSync(path + '/node_modules/abbrev')
+    t.equal(st.isSymbolicLink(), true, 'fs is case-insensitive')
   } catch (er) {
-    t.plan(0, 'case sensitive file system, test not relevant')
+    t.plan(0, 'case-sensitive file system, test not relevant')
     return
-  }
-
-  const kReifyPackages = Symbol.for('reifyPackages')
-  const reifyPackages = Arborist.prototype[kReifyPackages]
-  t.teardown(() => Arborist.prototype[kReifyPackages] = reifyPackages)
-  Arborist.prototype[kReifyPackages] = async function () {
-    fs.mkdirSync(path + '/node_modules')
-    fs.symlinkSync('../target', path + '/node_modules/ABBREV')
-    Arborist.prototype[kReifyPackages] = reifyPackages
-    return this[kReifyPackages]()
   }
 
   createRegistry(t, true)
@@ -2585,8 +2616,7 @@ t.test('adding an unresolvable optional dep is OK', async t => {
   })
   createRegistry(t, true)
   const tree = await reify(path, { add: ['abbrev'] })
-  t.strictSame([...tree.children.values()], [], 'nothing actually added')
-  t.matchSnapshot(printTree(tree))
+  t.equal(tree.children.size, 0, 'not added')
 })
 
 t.test('includeWorkspaceRoot in addition to workspace', async t => {
@@ -3164,7 +3194,76 @@ t.test('installLinks', (t) => {
   t.end()
 })
 
-t.only('should preserve exact ranges, missing actual tree', async (t) => {
+t.test('root overrides with file: paths are visible to workspaces', async t => {
+  const path = t.testdir({
+    'package.json': JSON.stringify({
+      name: 'root',
+      workspaces: ['hello', 'nested/goodbye'],
+      dependencies: {},
+      overrides: {
+        print: 'file:./print',
+      },
+    }),
+    hello: {
+      'package.json': JSON.stringify({
+        name: 'hello',
+        version: '1.0.0',
+        dependencies: {
+          print: '../print',
+        },
+      }),
+    },
+    nested: {
+      goodbye: {
+        'package.json': JSON.stringify({
+          name: 'second',
+          version: '1.0.0',
+          dependencies: {
+            print: '../print',
+          },
+        }),
+      },
+    },
+    print: {
+      'package.json': JSON.stringify({
+        name: 'print',
+        version: '1.0.0',
+        main: 'index.js',
+      }),
+    },
+  })
+
+  createRegistry(t, false)
+  await reify(path)
+
+  const printSymlink = fs.readlinkSync(resolve(path, 'node_modules/print'))
+  const secondSymlink = fs.readlinkSync(resolve(path, 'node_modules/second'))
+
+  // Create a platform-agnostic way to compare symlink targets
+  const normalizeLinkTarget = target => {
+    if (process.platform === 'win32') {
+      // For Windows: convert absolute paths to relative and normalize slashes
+      const linkDir = dirname(resolve(path, 'node_modules/print'))
+      return relative(linkDir, target).replace(/\\/g, '/')
+    }
+    // For Unix: already a relative path
+    return target
+  }
+
+  t.equal(
+    normalizeLinkTarget(printSymlink),
+    '../print',
+    'print symlink points to ../print (normalized for platform)'
+  )
+
+  t.equal(
+    normalizeLinkTarget(secondSymlink),
+    '../nested/goodbye',
+    'print symlink points to ../nested/goodbye (normalized for platform)'
+  )
+})
+
+t.test('should preserve exact ranges, missing actual tree', async (t) => {
   const Pacote = require('pacote')
   const Arborist = t.mock('../../lib/arborist', {
     pacote: {
@@ -3233,6 +3332,24 @@ t.only('should preserve exact ranges, missing actual tree', async (t) => {
     },
   })
 
+  const customGitSshPackument = JSON.stringify({
+    _id: 'gitssh',
+    _rev: 'lkjadflkjasdf',
+    name: 'gitssh',
+    'dist-tags': { latest: '1.1.1' },
+    versions: {
+      '1.1.1': {
+        name: 'gitssh',
+        version: '1.1.1',
+        dist: {
+          // this is a url that `new URL()` cant parse
+          // https://github.com/npm/cli/issues/5278
+          tarball: 'git+ssh://git@customgit.com:a/b/c.git#lkjadflkjasdf',
+        },
+      },
+    },
+  })
+
   const notAUrlPackument = JSON.stringify({
     _id: 'notaurl',
     _rev: 'lkjadflkjasdf',
@@ -3249,7 +3366,37 @@ t.only('should preserve exact ranges, missing actual tree', async (t) => {
     },
   })
 
-  t.only('host should not be replaced replaceRegistryHost=never', async (t) => {
+  t.test('valid custom hosted git url', async (t) => {
+    const testdir = t.testdir({
+      project: {
+        'package.json': JSON.stringify({
+          name: 'myproject',
+          version: '1.0.0',
+          dependencies: {
+            gitssh: '1.1.1',
+          },
+        }),
+      },
+    })
+
+    tnock(t, 'https://registry.github.com')
+      .get('/gitssh')
+      .reply(200, customGitSshPackument)
+
+    const getLogs = warningTracker()
+
+    const arb = new Arborist({
+      path: resolve(testdir, 'project'),
+      registry: 'https://registry.github.com',
+      cache: resolve(testdir, 'cache'),
+    })
+    await arb.reify()
+    // since it's not throwing an error on invalid url and returning undefined
+    // which trashes the node, so here we can only check if it has no warnings
+    t.strictSame(getLogs(), [], 'did not get warnings')
+  })
+
+  t.test('host should not be replaced replaceRegistryHost=never', async (t) => {
     const testdir = t.testdir({
       project: {
         'package.json': JSON.stringify({
@@ -3289,7 +3436,7 @@ t.only('should preserve exact ranges, missing actual tree', async (t) => {
     await arb.reify()
   })
 
-  t.only('host should be replaced replaceRegistryHost=npmjs', async (t) => {
+  t.test('host should be replaced replaceRegistryHost=npmjs', async (t) => {
     const testdir = t.testdir({
       project: {
         'package.json': JSON.stringify({
@@ -3329,7 +3476,7 @@ t.only('should preserve exact ranges, missing actual tree', async (t) => {
     await arb.reify()
   })
 
-  t.only('host should be always replaceRegistryHost=always', async (t) => {
+  t.test('host should be always replaceRegistryHost=always', async (t) => {
     const testdir = t.testdir({
       project: {
         'package.json': JSON.stringify({
@@ -3368,9 +3515,163 @@ t.only('should preserve exact ranges, missing actual tree', async (t) => {
     })
     await arb.reify()
   })
+
+  t.test('registry with path should only swap hostname', async (t) => {
+    const abbrevPackument3 = JSON.stringify({
+      _id: 'abbrev',
+      _rev: 'lkjadflkjasdf',
+      name: 'abbrev',
+      'dist-tags': { latest: '1.1.1' },
+      versions: {
+        '1.1.1': {
+          name: 'abbrev',
+          version: '1.1.1',
+          dist: {
+            tarball: 'https://artifactory.example.com/api/npm/npm-all/abbrev/-/abbrev-1.1.1.tgz',
+          },
+        },
+      },
+    })
+
+    const testdir = t.testdir({
+      project: {
+        'package.json': JSON.stringify({
+          name: 'myproject',
+          version: '1.0.0',
+          dependencies: {
+            abbrev: '1.1.1',
+          },
+        }),
+      },
+    })
+
+    tnock(t, 'https://new-host.artifactory.example.com')
+      .get('/api/npm/npm-all/abbrev')
+      .reply(200, abbrevPackument3)
+
+    tnock(t, 'https://new-host.artifactory.example.com')
+      .get('/api/npm/npm-all/abbrev/-/abbrev-1.1.1.tgz')
+      .reply(200, abbrevTGZ)
+
+    const arb = new Arborist({
+      path: resolve(testdir, 'project'),
+      registry: 'https://new-host.artifactory.example.com/api/npm/npm-all',
+      cache: resolve(testdir, 'cache'),
+      replaceRegistryHost: 'always',
+    })
+    await arb.reify()
+  })
+
+  t.test('registry path prepending', async t => {
+    // A registry path is prepended to resolved URLs that don't already have it
+    const abbrevPackument4 = JSON.stringify({
+      _id: 'abbrev',
+      _rev: 'lkjadflkjasdf',
+      name: 'abbrev',
+      'dist-tags': { latest: '1.1.1' },
+      versions: {
+        '1.1.1': {
+          name: 'abbrev',
+          version: '1.1.1',
+          dist: {
+            // Note: This URL has no path component that matches our registry path
+            tarball: 'https://external-registry.example.com/abbrev-1.1.1.tgz',
+          },
+        },
+      },
+    })
+
+    const testdir = t.testdir({
+      project: {
+        'package.json': JSON.stringify({
+          name: 'myproject',
+          version: '1.0.0',
+          dependencies: {
+            abbrev: '1.1.1',
+          },
+        }),
+      },
+    })
+
+    // Set up the registry with a deep path
+    const registryHost = 'https://registry.example.com'
+    const registryPath = '/custom/deep/path/registry'
+    const registry = `${registryHost}${registryPath}`
+
+    tnock(t, registryHost)
+      .get(`${registryPath}/abbrev`)
+      .reply(200, abbrevPackument4)
+
+    // This is the critical test - the tarball URL in the packument doesn't have our registry path, but when replaceRegistryHost is 'always', we should get a request to this URL which includes the registry path
+    tnock(t, registryHost)
+      .get(`${registryPath}/abbrev-1.1.1.tgz`)
+      .reply(200, abbrevTGZ)
+
+    const arb = new Arborist({
+      path: resolve(testdir, 'project'),
+      registry,
+      cache: resolve(testdir, 'cache'),
+      replaceRegistryHost: 'always',
+    })
+
+    await t.resolves(arb.reify(), 'reify should complete successfully')
+  })
+
+  t.test('registry with different protocol should swap protocol', async (t) => {
+    const abbrevPackument4 = JSON.stringify({
+      _id: 'abbrev',
+      _rev: 'lkjadflkjasdf',
+      name: 'abbrev',
+      'dist-tags': { latest: '1.1.1' },
+      versions: {
+        '1.1.1': {
+          name: 'abbrev',
+          version: '1.1.1',
+          dist: {
+            // Note: This URL has no path component that matches our registry path
+            tarball: 'https://external-registry.example.com/abbrev-1.1.1.tgz',
+          },
+        },
+      },
+    })
+
+    const testdir = t.testdir({
+      project: {
+        'package.json': JSON.stringify({
+          name: 'myproject',
+          version: '1.0.0',
+          dependencies: {
+            abbrev: '1.1.1',
+          },
+        }),
+      },
+    })
+
+    // Set up the registry with an http protocol
+    const registryHost = 'http://registry.example.com'
+    const registryPath = '/custom/deep/path/registry'
+    const registry = `${registryHost}${registryPath}`
+
+    tnock(t, registryHost)
+      .get(`${registryPath}/abbrev`)
+      .reply(200, abbrevPackument4)
+
+    tnock(t, registryHost)
+      .get(`${registryPath}/abbrev-1.1.1.tgz`)
+      .reply(200, abbrevTGZ)
+
+    const arb = new Arborist({
+      path: resolve(testdir, 'project'),
+      registry,
+      cache: resolve(testdir, 'cache'),
+      replaceRegistryHost: 'always',
+    })
+
+    await t.resolves(arb.reify(), 'reify should complete successfully when protocol changes from https to http')
+  })
 })
 
-t.test('install stategy linked', async (t) => {
+t.test('install strategy linked', async (t) => {
   const Arborist = require('../../lib/index.js')
   const abbrev = resolve(__dirname,
     '../fixtures/registry-mocks/content/abbrev/-/abbrev-1.1.1.tgz')
@@ -3426,4 +3727,145 @@ t.test('install stategy linked', async (t) => {
     t.ok(store.isDirectory(), 'abbrev got installed')
     t.ok(abbrev.isSymbolicLink(), 'abbrev got installed')
   })
+})
+
+t.test('workspace installs retain existing versions with newer package specs', async t => {
+  const path = t.testdir({
+    'package.json': JSON.stringify({
+      workspaces: [
+        'packages/*',
+      ],
+      overrides: {
+        'doesnt-matter-can-be-anything': '1.2.3',
+      },
+    }),
+    packages: {
+      'my-cool-package': {
+        'package.json': JSON.stringify({}),
+      },
+      'another-cool-package': {
+        'package.json': JSON.stringify({}),
+      },
+    },
+  })
+
+  createRegistry(t, true)
+
+  // Step 1: Install abbrev@1.0.4 in my-cool-package
+  await reify(path, {
+    add: ['abbrev@1.0.4'],
+    // setting savePrefix to '' is exactly what the --save-exact flag does in definitions.js
+    savePrefix: '',
+    workspaces: ['my-cool-package'],
+  })
+
+  // Verify hoisted installation
+  const rootNodeModules = resolve(path, 'node_modules/abbrev/package.json')
+  t.ok(fs.existsSync(rootNodeModules), 'abbrev should be hoisted to root node_modules')
+
+  const hoistedPkg = JSON.parse(fs.readFileSync(rootNodeModules, 'utf8'))
+  t.equal(hoistedPkg.version, '1.0.4', 'hoisted version should be 1.0.4')
+
+  // Check my-cool-package package.json
+  const myPackageJson = JSON.parse(fs.readFileSync(
+    resolve(path, 'packages/my-cool-package/package.json'), 'utf8'))
+  t.same(myPackageJson.dependencies, { abbrev: '1.0.4' },
+    'my-cool-package should have abbrev@1.0.4 in dependencies')
+
+  // Step 2: Install abbrev@1.1.1 in another-cool-package
+  await reify(path, {
+    add: ['abbrev@1.1.1'],
+    savePrefix: '',
+    workspaces: ['another-cool-package'],
+  })
+
+  // Verify un-hoisted installation
+  const anotherNodeModules = resolve(path, 'packages/another-cool-package/node_modules/abbrev/package.json')
+  t.ok(fs.existsSync(anotherNodeModules), 'abbrev@1.1.1 should be installed in another-cool-package/node_modules')
+
+  const unhoistedPkg = JSON.parse(fs.readFileSync(anotherNodeModules, 'utf8'))
+  t.equal(unhoistedPkg.version, '1.1.1', 'unhoisted version should be 1.1.1')
+
+  // Check another-cool-package package.json
+  const anotherPackageJson = JSON.parse(fs.readFileSync(
+    resolve(path, 'packages/another-cool-package/package.json'), 'utf8'))
+  t.same(anotherPackageJson.dependencies, { abbrev: '1.1.1' },
+    'another-cool-package should have abbrev@1.1.1 in dependencies')
+
+  // Step 3: Install abbrev@1.0.4 in another-cool-package
+  await reify(path, {
+    add: ['abbrev@1.0.4'],
+    savePrefix: '',
+    workspaces: ['another-cool-package'],
+  })
+
+  t.ok(fs.existsSync(rootNodeModules), 'abbrev@1.0.4 should still be hoisted to root node_modules')
+  t.notOk(fs.existsSync(anotherNodeModules), 'abbrev@1.1.1 should be removed from another-cool-package/node_modules')
+
+  // Check another-cool-package package.json - should now be updated to 1.0.4
+  const updatedPackageJson = JSON.parse(fs.readFileSync(
+    resolve(path, 'packages/another-cool-package/package.json'), 'utf8'))
+  t.same(updatedPackageJson.dependencies, { abbrev: '1.0.4' },
+    'another-cool-package package.json should be updated to abbrev@1.0.4')
+})
+
+t.test('externalOptionalDependencies excludes inert optional node with installStrategy linked', async t => {
+  const testDir = t.testdir({
+    'package.json': JSON.stringify({
+      optionalDependencies: {
+        abbrev: '1.1.1',
+      },
+    }),
+    'package-lock.json': JSON.stringify({
+      lockfileVersion: 2,
+      requires: true,
+      packages: {
+        '': {
+          optionalDependencies: {
+            abbrev: '1.1.1',
+          },
+        },
+        'node_modules/abbrev': {
+          version: '1.1.1',
+          resolved: 'https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz',
+          integrity: 'sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==',
+          dev: true,
+          cpu: ['not-your-cpu'],
+        },
+      },
+      optionalDependencies: {
+        abbrev: {
+          version: '1.1.1',
+          resolved: 'https://registry.npmjs.org/abbrev/-/abbrev-1.1.1.tgz',
+          integrity: 'sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==',
+          dev: true,
+          cpu: ['not-your-cpu'],
+        },
+      },
+    }),
+  })
+
+  const arb = new Arborist({
+    path: testDir,
+    registry: 'https://registry.npmjs.org',
+    cache: resolve(testDir, 'cache'),
+    installStrategy: 'linked',
+  })
+  await arb.reify({ installStrategy: 'linked' })
+
+  // Assert that the optional inert node does not appear in externalOptionalDependencies
+  t.notOk(
+    arb.idealGraph.externalOptionalDependencies &&
+    arb.idealGraph.externalOptionalDependencies.some(n => n && n.name === 'abbrev'),
+    'inert optional dependency should not appear in externalOptionalDependencies'
+  )
+
+  // And verify that it is not installed on disk
+  t.throws(
+    () => fs.lstatSync(resolve(testDir, 'node_modules', 'abbrev')),
+    { code: 'ENOENT' },
+    'inert optional node should not be installed'
+  )
+
+  t.end()
 })

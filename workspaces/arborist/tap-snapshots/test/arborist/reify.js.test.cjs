@@ -1857,23 +1857,6 @@ exports[`test/arborist/reify.js TAP add spec * with semver prefix range gets upd
 
 `
 
-exports[`test/arborist/reify.js TAP adding an unresolvable optional dep is OK > must match snapshot 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "abbrev" => EdgeOut {
-      "name": "abbrev",
-      "spec": "999999",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-adding-an-unresolvable-optional-dep-is-OK",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-adding-an-unresolvable-optional-dep-is-OK",
-}
-`
-
 exports[`test/arborist/reify.js TAP bad shrinkwrap file > expect resolving Promise 1`] = `
 ArboristNode {
   "children": Map {
@@ -2134,7 +2117,6 @@ ArboristNode {
           },
         },
       },
-      "dev": true,
       "edgesOut": Map {
         "abbrev" => EdgeOut {
           "error": "MISSING",
@@ -2840,25 +2822,6 @@ ArboristNode {
 }
 `
 
-exports[`test/arborist/reify.js TAP do not install optional deps with mismatched platform specifications > expect resolving Promise 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-do-not-install-optional-deps-with-mismatched-platform-specifications",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-do-not-install-optional-deps-with-mismatched-platform-specifications",
-  "version": "1.0.0",
-}
-`
-
 exports[`test/arborist/reify.js TAP do not update shrinkwrapped deps > expect resolving Promise 1`] = `
 ArboristNode {
   "children": Map {
@@ -3315,63 +3278,6 @@ ArboristNode {
   "packageName": "testing-bundledeps",
   "path": "{CWD}/test/arborist/tap-testdir-reify-dry-run-do-not-get-anything-wet-testing-bundledeps-empty",
   "version": "1.2.3",
-}
-`
-
-exports[`test/arborist/reify.js TAP fail to install optional deps with matched os and matched cpu and mismatched libc with os and cpu and libc options > expect resolving Promise 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-fail-to-install-optional-deps-with-matched-os-and-matched-cpu-and-mismatched-libc-with-os-and-cpu-and-libc-options",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-fail-to-install-optional-deps-with-matched-os-and-matched-cpu-and-mismatched-libc-with-os-and-cpu-and-libc-options",
-  "version": "1.0.0",
-}
-`
-
-exports[`test/arborist/reify.js TAP fail to install optional deps with matched os and mismatched cpu with os and cpu and libc options > expect resolving Promise 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-fail-to-install-optional-deps-with-matched-os-and-mismatched-cpu-with-os-and-cpu-and-libc-options",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-fail-to-install-optional-deps-with-matched-os-and-mismatched-cpu-with-os-and-cpu-and-libc-options",
-  "version": "1.0.0",
-}
-`
-
-exports[`test/arborist/reify.js TAP fail to install optional deps with mismatched os and matched cpu with os and cpu and libc options > expect resolving Promise 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-fail-to-install-optional-deps-with-mismatched-os-and-matched-cpu-with-os-and-cpu-and-libc-options",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-fail-to-install-optional-deps-with-mismatched-os-and-matched-cpu-with-os-and-cpu-and-libc-options",
-  "version": "1.0.0",
 }
 `
 
@@ -17206,7 +17112,6 @@ Array [
   "reify:retireShallow",
   "reify:save",
   "reify:trash",
-  "reify:trashOmits",
   "reify:unpack",
   "reify:unretire",
   "reifyNode:node_modules/@isaacs/testing-peer-deps-b",
@@ -33175,25 +33080,6 @@ exports[`test/arborist/reify.js TAP scoped registries > should preserve original
 @ruyadorno/theoretically-private-pkg@https://npm.pkg.github.com/@ruyadorno/theoretically-private-pkg/-/theoretically-private-pkg-1.2.3.tgz
 `
 
-exports[`test/arborist/reify.js TAP still do not install optional deps with mismatched platform specifications even when forced > expect resolving Promise 1`] = `
-ArboristNode {
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": null,
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-still-do-not-install-optional-deps-with-mismatched-platform-specifications-even-when-forced",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-still-do-not-install-optional-deps-with-mismatched-platform-specifications-even-when-forced",
-  "version": "1.0.0",
-}
-`
-
 exports[`test/arborist/reify.js TAP store files with a custom indenting > must match snapshot 1`] = `
 {
 	"name": "tab-indented-package-json",
@@ -33228,43 +33114,6 @@ exports[`test/arborist/reify.js TAP store files with a custom indenting > must m
 	}
 }
 
-`
-
-exports[`test/arborist/reify.js TAP success to install optional deps with matched platform specifications with os and cpu and libc options > expect resolving Promise 1`] = `
-ArboristNode {
-  "children": Map {
-    "platform-specifying-test-package" => ArboristNode {
-      "edgesIn": Set {
-        EdgeIn {
-          "from": "",
-          "name": "platform-specifying-test-package",
-          "spec": "1.0.0",
-          "type": "optional",
-        },
-      },
-      "location": "node_modules/platform-specifying-test-package",
-      "name": "platform-specifying-test-package",
-      "optional": true,
-      "path": "{CWD}/test/arborist/tap-testdir-reify-success-to-install-optional-deps-with-matched-platform-specifications-with-os-and-cpu-and-libc-options/node_modules/platform-specifying-test-package",
-      "resolved": "https://registry.npmjs.org/platform-specifying-test-package/-/platform-specifying-test-package-1.0.0.tgz",
-      "version": "1.0.0",
-    },
-  },
-  "edgesOut": Map {
-    "platform-specifying-test-package" => EdgeOut {
-      "name": "platform-specifying-test-package",
-      "spec": "1.0.0",
-      "to": "node_modules/platform-specifying-test-package",
-      "type": "optional",
-    },
-  },
-  "isProjectRoot": true,
-  "location": "",
-  "name": "tap-testdir-reify-success-to-install-optional-deps-with-matched-platform-specifications-with-os-and-cpu-and-libc-options",
-  "packageName": "platform-test",
-  "path": "{CWD}/test/arborist/tap-testdir-reify-success-to-install-optional-deps-with-matched-platform-specifications-with-os-and-cpu-and-libc-options",
-  "version": "1.0.0",
-}
 `
 
 exports[`test/arborist/reify.js TAP tarball deps with transitive tarball deps > expect resolving Promise 1`] = `
@@ -53491,6 +53340,39 @@ Object {
     "node_modules/b": Object {
       "link": true,
       "resolved": "b",
+    },
+  },
+  "requires": true,
+}
+`
+
+exports[`test/arborist/reify.js TAP workspaces reify workspaces with overrides > should retain override version (4.1.3) 1`] = `
+Object {
+  "lockfileVersion": 3,
+  "name": "workspace-with-overrides",
+  "packages": Object {
+    "": Object {
+      "name": "workspace-with-overrides",
+      "workspaces": Array [
+        "ws",
+      ],
+    },
+    "node_modules/a": Object {
+      "link": true,
+      "resolved": "ws",
+    },
+    "node_modules/arg": Object {
+      "integrity": "sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/arg/-/arg-4.1.3.tgz",
+      "version": "4.1.3",
+    },
+    "ws": Object {
+      "dependencies": Object {
+        "arg": "4.1.2",
+      },
+      "name": "a",
+      "version": "1.0.0",
     },
   },
   "requires": true,

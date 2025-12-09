@@ -42,7 +42,7 @@ These scripts happen in addition to the `pre<event>`, `post<event>`, and
 **prepare** (since `npm@4.0.0`)
 * Runs BEFORE the package is packed, i.e.
 during `npm publish` and `npm pack`
-* Runs on local `npm install` without any arguments
+* Runs on local `npm install` without package arguments (runs with flags like `--production` or `--omit=dev`, but does not run when installing specific packages like `npm install express`)
 * Runs AFTER `prepublishOnly` and `prepack`, but BEFORE `postpack`
 * Runs for a package if it's being installed as a link through `npm install <folder>`
 
@@ -50,6 +50,8 @@ during `npm publish` and `npm pack`
 
 * As of `npm@7` these scripts run in the background.
   To see the output, run with: `--foreground-scripts`.
+
+* **In workspaces, prepare scripts run concurrently** across all packages. If you have interdependent packages where one must build before another, consider using `--foreground-scripts` (which can be set in `.npmrc` with `foreground-scripts=true`) to run scripts sequentially, or structure your build differently.
 
 **prepublish** (DEPRECATED)
 * Does not run during `npm publish`, but does run during `npm ci` and `npm install`.
@@ -268,8 +270,27 @@ then you could run `npm start` to execute the `bar` script, which is exported in
 
 #### package.json vars
 
-The package.json fields are tacked onto the `npm_package_` prefix.
-So, for instance, if you had `{"name":"foo", "version":"1.2.5"}` in your package.json file, then your package scripts would have the `npm_package_name` environment variable set to "foo", and the `npm_package_version` set to "1.2.5".  You can access these variables in your code with `process.env.npm_package_name` and `process.env.npm_package_version`, and so on for other fields.
+npm sets the following environment variables from the package.json:
+
+* `npm_package_name` - The package name
+* `npm_package_version` - The package version
+* `npm_package_bin_*` - Each executable defined in the bin field
+* `npm_package_engines_*` - Each engine defined in the engines field
+* `npm_package_config_*` - Each config value defined in the config field
+* `npm_package_json` - The full path to the package.json file
+
+Additionally, for install scripts (`preinstall`, `install`, `postinstall`), npm sets these environment variables:
+
+* `npm_package_resolved` - The resolved URL for the package
+* `npm_package_integrity` - The integrity hash for the package
+* `npm_package_optional` - Set to `"true"` if the package is optional
+* `npm_package_dev` - Set to `"true"` if the package is a dev dependency
+* `npm_package_peer` - Set to `"true"` if the package is a peer dependency
+* `npm_package_dev_optional` - Set to `"true"` if the package is both dev and optional
+
+For example, if you had `{"name":"foo", "version":"1.2.5"}` in your package.json file, then your package scripts would have the `npm_package_name` environment variable set to "foo", and the `npm_package_version` set to "1.2.5". You can access these variables in your code with `process.env.npm_package_name` and `process.env.npm_package_version`.
+
+**Note:** In npm 7 and later, most package.json fields are no longer provided as environment variables. Scripts that need access to other package.json fields should read the package.json file directly. The `npm_package_json` environment variable provides the path to the file for this purpose.
 
 See [`package.json`](/configuring-npm/package-json) for more on package configs.
 
